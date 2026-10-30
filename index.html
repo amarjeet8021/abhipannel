@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABHI SMM PANNEL - Premium Social Media Marketing Panel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .active-tab {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- AUTHENTICATION OVERLAY (Sign In / Sign Up / Admin Login) -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden relative transition-all">
+            <!-- Modal Header Tabs -->
+            <div class="flex border-b border-slate-200 bg-slate-100 text-sm font-bold text-slate-600">
+                <button id="authTabSignInBtn" onclick="switchAuthMode('signin')" class="flex-1 py-3.5 text-center text-blue-600 border-b-2 border-blue-600 bg-white">Sign In</button>
+                <button id="authTabSignUpBtn" onclick="switchAuthMode('signup')" class="flex-1 py-3.5 text-center hover:bg-slate-200">Sign Up</button>
+            </div>
+
+            <!-- SIGN IN FORM -->
+            <form id="signInForm" onsubmit="handleSignIn(event)" class="p-6 space-y-4">
+                <div class="text-center mb-2">
+                    <h3 class="text-xl font-bold text-slate-900">Welcome Back</h3>
+                    <p class="text-xs text-slate-500">Sign in to your account or use Admin credentials</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-800 flex items-start gap-2">
+                    <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <strong>Admin Credentials:</strong><br>
+                        ID: <code class="font-mono bg-amber-100 px-1 py-0.5 rounded">6200482928</code> | Password: <code class="font-mono bg-amber-100 px-1 py-0.5 rounded">Abhi@219</code>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username / Phone ID</label>
+                    <input type="text" id="signInIdentifier" required placeholder="Enter username or 6200482928" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
+                    <input type="password" id="signInPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-600/30 text-sm transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                </button>
+            </form>
+
+            <!-- SIGN UP FORM -->
+            <form id="signUpForm" onsubmit="handleSignUp(event)" class="p-6 space-y-4 hidden">
+                <div class="text-center mb-2">
+                    <h3 class="text-xl font-bold text-slate-900">Create Account</h3>
+                    <p class="text-xs text-slate-500">Register as a seller/client on Main SMM Hub</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label>
+                    <input type="text" id="signUpName" required placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username / Phone</label>
+                    <input type="text" id="signUpUser" required placeholder="username or phone" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
+                    <input type="password" id="signUpPass" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/30 text-sm transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i> Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOP NAVBAR -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="px-4 lg:px-8 py-3 flex items-center justify-between">
+            <!-- Brand & Mobile Menu Toggle -->
+            <div class="flex items-center gap-3">
+                <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div class="flex items-center gap-2 cursor-pointer" onclick="switchTab('new-order')">
+                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-extrabold px-3 py-1.5 rounded-lg text-xl tracking-wider shadow-md">
+                        MSH
+                    </div>
+                    <div class="hidden sm:block">
+                        <h1 class="font-bold text-slate-900 text-lg leading-tight">MAIN SMM HUB</h1>
+                        <p class="text-xs text-blue-600 font-medium">#1 Service Supplier</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Right Section: Balance, Currency, Profile -->
+            <div class="flex items-center gap-3 sm:gap-5">
+                <!-- Currency Selector -->
+                <div class="relative">
+                    <select id="currencySelect" onchange="changeCurrency(this.value)" class="bg-slate-100 border border-slate-200 text-slate-700 text-xs sm:text-sm rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        <option value="INR">INR (₹)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                    </select>
+                </div>
+
+                <!-- Account Balance Widget -->
+                <div id="headerBalanceWidget" class="bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <div class="bg-blue-600 text-white p-1 rounded-full">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-blue-600 block leading-none">Balance</span>
+                        <span id="userBalanceDisplay" class="text-sm font-extrabold text-slate-900">₹0.00</span>
+                    </div>
+                </div>
+
+                <!-- Admin Indicator Badge -->
+                <div id="adminBadge" class="hidden bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Admin Mode
+                </div>
+
+                <!-- Profile Dropdown & Logout -->
+                <div class="flex items-center gap-2 border-l border-slate-200 pl-3">
+                    <div id="userAvatar" class="w-9 h-9 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center text-sm shadow">
+                        ?
+                    </div>
+                    <div class="hidden md:block">
+                        <div id="userDisplayName" class="text-sm font-semibold text-slate-800 leading-tight">Not Signed In</div>
+                        <div id="userRoleName" class="text-xs text-slate-500">Guest</div>
+                    </div>
+                    <button onclick="logout()" title="Logout" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all ml-1">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 relative">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 fixed lg:static inset-y-0 left-0 z-20 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col justify-between shadow-xl lg:shadow-none">
+            <div class="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                
+                <!-- USER NAV ITEMS -->
+                <div id="userNavGroup" class="space-y-1">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">User Menu</div>
+                    
+                    <button onclick="switchTab('new-order')" id="tab-btn-new-order" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white active-tab">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>New Order</span>
+                    </button>
+
+                    <button onclick="switchTab('services')" id="tab-btn-services" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="list" class="w-4 h-4"></i>
+                        <span>Services List</span>
+                    </button>
+
+                    <button onclick="switchTab('orders')" id="tab-btn-orders" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="history" class="w-4 h-4"></i>
+                        <span>Order History</span>
+                    </button>
+
+                    <button onclick="switchTab('add-funds')" id="tab-btn-add-funds" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        <span>Add Funds</span>
+                    </button>
+
+                    <button onclick="switchTab('api-docs')" id="tab-btn-api-docs" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="code" class="w-4 h-4"></i>
+                        <span>API Docs</span>
+                    </button>
+
+                    <button onclick="switchTab('tickets')" id="tab-btn-tickets" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="life-buoy" class="w-4 h-4"></i>
+                        <span>Support / Tickets</span>
+                    </button>
+                </div>
+
+                <!-- ADMIN NAV ITEMS (Visible only for admin login) -->
+                <div id="adminNavGroup" class="space-y-1 pt-4 hidden border-t border-slate-800 mt-4">
+                    <div class="text-[11px] font-bold text-amber-400 uppercase tracking-wider px-3 mb-2 flex items-center gap-1">
+                        <i data-lucide="shield" class="w-3 h-3"></i> Admin Control
+                    </div>
+
+                    <button onclick="switchTab('admin-dashboard')" id="tab-btn-admin-dashboard" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-amber-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Admin Overview</span>
+                    </button>
+
+                    <button onclick="switchTab('admin-approvals')" id="tab-btn-admin-approvals" class="nav-tab w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-amber-300 hover:bg-slate-800 hover:text-white">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-square" class="w-4 h-4"></i>
+                            <span>Pending Payments</span>
+                        </div>
+                        <span id="pendingApprovalBadge" class="bg-amber-500 text-slate-900 font-extrabold text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button onclick="switchTab('admin-users')" id="tab-btn-admin-users" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-amber-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Users Registration</span>
+                    </button>
+
+                    <button onclick="switchTab('admin-orders')" id="tab-btn-admin-orders" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-amber-300 hover:bg-slate-800 hover:text-white">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>All Orders</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Header Right Section: Balance, Currency, Profile -->
+            <div class="flex items-center gap-3 sm:gap-5">
+                <!-- Currency Selector -->
+                <div class="relative">
+                    <select id="currencySelect" onchange="changeCurrency(this.value)" class="bg-slate-100 border border-slate-200 text-slate-700 text-xs sm:text-sm rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        <option value="INR">INR (₹)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                    </select>
+                </div>
+
+                <!-- Account Balance Widget -->
+                <div class="bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <div class="bg-blue-600 text-white p-1 rounded-full">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-blue-600 block leading-none">Balance</span>
+                        <span id="userBalanceDisplay" class="text-sm font-extrabold text-slate-900">₹1,250.00</span>
+                    </div>
+                </div>
+
+                <!-- Profile Dropdown -->
+                <div class="flex items-center gap-2 border-l border-slate-200 pl-3">
+                    <div class="w-9 h-9 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center text-sm shadow">
+                        JD
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="text-sm font-semibold text-slate-800 leading-tight">John Doe</div>
+                        <div class="text-xs text-slate-500">VIP Client</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 relative">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 fixed lg:static inset-y-0 left-0 z-20 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col justify-between shadow-xl lg:shadow-none">
+            <div class="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Core Services</div>
+                
+                <button onclick="switchTab('new-order')" id="tab-btn-new-order" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white active-tab">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    <span>New Order</span>
+                </button>
+
+                <button onclick="switchTab('services')" id="tab-btn-services" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                    <span>Services List</span>
+                </button>
+
+                <button onclick="switchTab('orders')" id="tab-btn-orders" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    <span>Order History</span>
+                </button>
+
+                <button onclick="switchTab('add-funds')" id="tab-btn-add-funds" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                    <span>Add Funds</span>
+                </button>
+
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-4 mb-2">Developer & Tools</div>
+
+                <button onclick="switchTab('api-docs')" id="tab-btn-api-docs" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="code" class="w-4 h-4"></i>
+                    <span>API Docs</span>
+                </button>
+
+                <button onclick="switchTab('tickets')" id="tab-btn-tickets" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="life-buoy" class="w-4 h-4"></i>
+                    <span>Support / Tickets</span>
+                </button>
+
+                <button onclick="switchTab('child-panel')" id="tab-btn-child-panel" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <span>Child Panel</span>
+                </button>
+
+                <button onclick="switchTab('affiliates')" id="tab-btn-affiliates" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-sm transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>Affiliates</span>
+                </button>
+            </div>
+
+            <div class="p-4 border-t border-slate-800">
+                <div class="bg-slate-800/80 rounded-xl p-3 flex items-center gap-3 border border-slate-700/50">
+                    <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </div>
+                    <div class="text-xs">
+                        <div class="font-semibold text-white">API Connection</div>
+                        <div class="text-emerald-400 font-medium">100% Operational</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
+
+            <!-- Toast Alert Container -->
+            <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+            <!-- TAB 1: NEW ORDER -->
+            <section id="tab-new-order" class="tab-content">
+                <!-- Promo Banner Video Simulation -->
+                <div class="mb-6 rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-900 text-white p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="space-y-2 z-10 max-w-xl">
+                        <span class="bg-amber-400 text-slate-900 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Top Service Provider👑</span>
+                        <h2 class="text-2xl lg:text-3xl font-extrabold leading-tight">Main SMM Panel | Fastest Automatic SMM Supplier</h2>
+                        <p class="text-blue-100 text-sm">Need help ordering or adding funds? Check our step-by-step video tutorials for quick setup!</p>
+                    </div>
+                    <div class="relative z-10 w-full md:w-auto flex-shrink-0">
+                        <a href="https://www.youtube.com" target="_blank" class="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-5 py-3 rounded-xl flex items-center justify-center gap-3 transition-all group shadow-lg">
+                            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="play" class="w-5 h-5 text-white fill-current"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs font-semibold text-slate-200">How to place order?</div>
+                                <div class="text-sm font-bold">Watch Video Guide</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Order Form -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-4">
+                            <i data-lucide="plus-circle" class="w-5 h-5 text-blue-600"></i> Place New Order
+                        </h3>
+
+                        <form id="orderForm" onsubmit="handleOrderSubmit(event)" class="space-y-5">
+                            <!-- Category Select -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Category</label>
+                                <div class="relative">
+                                    <select id="orderCategory" onchange="populateServiceDropdown()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition-all appearance-none cursor-pointer">
+                                        <!-- Dynamic categories loaded via JS -->
+                                    </select>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 top-4 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <!-- Service Select -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Service</label>
+                                <div class="relative">
+                                    <select id="orderService" onchange="updateServiceDetails()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition-all appearance-none cursor-pointer">
+                                        <!-- Dynamic options loaded via JS -->
+                                    </select>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 top-4 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <!-- Description Box -->
+                            <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-4 text-xs text-slate-700 space-y-1.5" id="serviceDescriptionBox">
+                                <div class="font-bold text-blue-900 flex items-center gap-1.5">
+                                    <i data-lucide="info" class="w-4 h-4"></i> Service Description:
+                                </div>
+                                <p id="serviceDescText">⚡ Instant Start | 0% Drop | Lifetime Non-Drop Guarantee</p>
+                                <div class="flex gap-4 pt-2 text-[11px] font-semibold text-slate-600">
+                                    <span>Min: <strong id="serviceMin" class="text-slate-900">100</strong></span>
+                                    <span>Max: <strong id="serviceMax" class="text-slate-900">100,000</strong></span>
+                                    <span>Rate: <strong id="serviceRate" class="text-slate-900">₹36.08</strong> per 1000</span>
+                                </div>
+                            </div>
+
+                            <!-- Link Input -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Target Link / URL</label>
+                                <input type="url" id="orderLink" required placeholder="https://t.me/yourchannel or https://instagram.com/p/..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition-all">
+                            </div>
+
+                            <!-- Quantity Input -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Quantity</label>
+                                <input type="number" id="orderQuantity" oninput="calculateOrderCharge()" required placeholder="Enter quantity" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition-all">
+                            </div>
+
+                            <!-- Calculated Charge Bar -->
+                            <div class="bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-400 font-medium block">Total Calculated Charge</span>
+                                    <span id="calculatedCharge" class="text-xl font-extrabold text-blue-400">₹0.00</span>
+                                </div>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5"></i> Submit Order
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Sidebar Info / Guidelines -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
+                                <i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> Order Instructions
+                            </h4>
+                            <ul class="space-y-3 text-xs text-slate-600">
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="check" class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5"></i>
+                                    <span>Ensure your channel or account is <strong>Public</strong> before placing orders.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="check" class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5"></i>
+                                    <span>Do not enter multiple orders for the same link until the first is completed.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="check" class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5"></i>
+                                    <span>Check Service ID description for refill guarantee periods.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- FAQ Box -->
+                        <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-md">
+                            <h4 class="font-bold text-base mb-3 flex items-center gap-2 text-blue-400">
+                                <i data-lucide="help-circle" class="w-5 h-5"></i> Need Instant Help?
+                            </h4>
+                            <p class="text-xs text-slate-300 mb-4 leading-relaxed">Have a stuck order or payment query? Open a support ticket or ping our 24/7 automated assistant.</p>
+                            <button onclick="switchTab('tickets')" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all">
+                                Open Support Ticket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: SERVICES LIST -->
+            <section id="tab-services" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Services Catalog</h3>
+                            <p class="text-xs text-slate-500">Browse all live social media marketing services with real-time rates</p>
+                        </div>
+                        
+                        <!-- Search & Filter Controls -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="relative min-w-[240px]">
+                                <input type="text" id="serviceSearchInput" onkeyup="filterServicesTable()" placeholder="Search service name or ID..." class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-4 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+                            </div>
+
+                            <select id="categoryFilterSelect" onchange="filterServicesTable()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="ALL">All Categories</option>
+                                <option value="Telegram Members">Telegram Members</option>
+                                <option value="Telegram Views">Telegram Views</option>
+                                <option value="Instagram Followers">Instagram Followers</option>
+                                <option value="YouTube Services">YouTube Services</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Services Table -->
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
+                                    <th class="p-3.5 border-b">ID</th>
+                                    <th class="p-3.5 border-b">Service Details</th>
+                                    <th class="p-3.5 border-b">Rate / 1000</th>
+                                    <th class="p-3.5 border-b">Min Order</th>
+                                    <th class="p-3.5 border-b">Max Order</th>
+                                    <th class="p-3.5 border-b text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servicesTableBody" class="divide-y divide-slate-200 text-xs font-medium text-slate-700">
+                                <!-- Populated dynamically by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: ORDERS HISTORY -->
+            <section id="tab-orders" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">My Orders</h3>
+                            <p class="text-xs text-slate-500">Track and monitor your current and previous service requests</p>
+                        </div>
+                        <button onclick="switchTab('new-order')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all self-start sm:self-auto flex items-center gap-1.5">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Place New Order
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
+                                    <th class="p-3.5 border-b">ID</th>
+                                    <th class="p-3.5 border-b">Service</th>
+                                    <th class="p-3.5 border-b">Target Link</th>
+                                    <th class="p-3.5 border-b">Qty</th>
+                                    <th class="p-3.5 border-b">Charge</th>
+                                    <th class="p-3.5 border-b">Status</th>
+                                    <th class="p-3.5 border-b">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody" class="divide-y divide-slate-200 text-xs font-medium text-slate-700">
+                                <!-- Populated dynamically by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: ADD FUNDS -->
+            <section id="tab-add-funds" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Add Funds Form -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 border-b pb-4">
+                            <i data-lucide="wallet" class="w-5 h-5 text-blue-600"></i> Deposit Funds
+                        </h3>
+
+                        <!-- Payment Method Select -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Method</label>
+                            <div class="relative">
+                                <select id="paymentMethodSelect" onchange="updatePaymentDetails(this.value)" class="w-full bg-blue-50/60 border border-blue-200 text-slate-800 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer appearance-none">
+                                    <option value="BHARATPE">BharatPe - QR / UPI (BHARATPE2Y0G0R6C3V57831@unitype)</option>
+                                    <option value="PHONEPE">PhonePe - QR</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 absolute right-4 top-4 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- Deposit Details Container -->
+                        <div id="paymentDynamicBox" class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row items-center gap-6">
+                            <!-- Populated dynamically via JavaScript -->
+                        </div>
+
+                        <!-- Minimum Payment Rule Notice -->
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-bold flex items-center gap-2">
+                            <i data-lucide="alert-circle" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+                            <span>MINIMUM DEPOSIT REQUIREMENT: ₹100.00. Payments require Admin verification before balance approval.</span>
+                        </div>
+
+                        <!-- Form Inputs -->
+                        <form onsubmit="handleAddFunds(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Order ID / Transaction ID / UTR</label>
+                                <input type="text" id="fundTxnId" required placeholder="Enter 12-digit UTR or Order ID" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Amount (<span id="fundCurrLabel">INR</span>) - Min ₹100</label>
+                                <input type="number" id="fundAmount" required min="100" placeholder="Minimum deposit 100" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none">
+                            </div>
+
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 text-sm">
+                                <i data-lucide="send" class="w-5 h-5"></i> Submit for Admin Approval
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Payment Logs & Instructions -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i> My Deposit History
+                            </h4>
+                            <div class="space-y-3" id="userDepositsList">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: ADMIN DASHBOARD (ADMIN ONLY) -->
+            <section id="tab-admin-dashboard" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-xl flex items-center justify-between">
+                        <div>
+                            <span class="bg-amber-400 text-slate-900 font-extrabold text-[10px] px-2.5 py-1 rounded-full uppercase">Control Panel</span>
+                            <h2 class="text-2xl font-extrabold mt-1">Admin Operations Center</h2>
+                            <p class="text-xs text-slate-400">Logged in as ID: 6200482928</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Total Users</div>
+                            <div id="adminStatUsers" class="text-2xl font-extrabold text-slate-900 mt-1">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-sm">
+                            <div class="text-xs font-bold text-amber-600 uppercase">Pending Approvals</div>
+                            <div id="adminStatPending" class="text-2xl font-extrabold text-amber-600 mt-1">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Total Funds Approved</div>
+                            <div id="adminStatApprovedFunds" class="text-2xl font-extrabold text-emerald-600 mt-1">₹0.00</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Total Orders</div>
+                            <div id="adminStatTotalOrders" class="text-2xl font-extrabold text-blue-600 mt-1">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: ADMIN APPROVALS (ADMIN ONLY) -->
+            <section id="tab-admin-approvals" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <div class="border-b pb-4">
+                        <h3 class="text-xl font-bold text-slate-900">Pending Deposit Approvals</h3>
+                        <p class="text-xs text-slate-500">Approve or reject user funds requests (Min ₹100 verified)</p>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
+                                    <th class="p-3.5 border-b">Request ID</th>
+                                    <th class="p-3.5 border-b">User</th>
+                                    <th class="p-3.5 border-b">Method</th>
+                                    <th class="p-3.5 border-b">Txn / UTR</th>
+                                    <th class="p-3.5 border-b">Amount</th>
+                                    <th class="p-3.5 border-b">Date</th>
+                                    <th class="p-3.5 border-b text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminPendingTableBody" class="divide-y divide-slate-200 text-xs font-medium text-slate-700">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: ADMIN USERS HISTORY (ADMIN ONLY) -->
+            <section id="tab-admin-users" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <div class="border-b pb-4">
+                        <h3 class="text-xl font-bold text-slate-900">User Registrations & History</h3>
+                        <p class="text-xs text-slate-500">View registered users and their account activity</p>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
+                                    <th class="p-3.5 border-b">ID / Username</th>
+                                    <th class="p-3.5 border-b">Full Name</th>
+                                    <th class="p-3.5 border-b">Joined Date</th>
+                                    <th class="p-3.5 border-b">Current Balance</th>
+                                    <th class="p-3.5 border-b">Total Deposited</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody" class="divide-y divide-slate-200 text-xs font-medium text-slate-700">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: ADMIN ALL ORDERS (ADMIN ONLY) -->
+            <section id="tab-admin-orders" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <div class="border-b pb-4">
+                        <h3 class="text-xl font-bold text-slate-900">All Client Orders</h3>
+                        <p class="text-xs text-slate-500">Manage order statuses across all users</p>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
+                                    <th class="p-3.5 border-b">Order ID</th>
+                                    <th class="p-3.5 border-b">User</th>
+                                    <th class="p-3.5 border-b">Service</th>
+                                    <th class="p-3.5 border-b">Target Link</th>
+                                    <th class="p-3.5 border-b">Qty</th>
+                                    <th class="p-3.5 border-b">Status</th>
+                                    <th class="p-3.5 border-b text-center">Change Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOrdersTableBody" class="divide-y divide-slate-200 text-xs font-medium text-slate-700">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: API DOCS -->
+            <section id="tab-api-docs" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                    <div class="border-b pb-4">
+                        <h3 class="text-xl font-bold text-slate-900">Developer API Documentation</h3>
+                        <p class="text-xs text-slate-500">Integrate Main SMM Hub services directly into your reseller panel or script.</p>
+                    </div>
+
+                    <!-- API Key Box -->
+                    <div class="bg-slate-900 text-white rounded-xl p-5 space-y-3">
+                        <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Your API Key</div>
+                        <div class="flex items-center gap-3">
+                            <input type="text" id="apiKeyInput" readonly value="msh_live_8f93a1029e847c01b2394c8d1" class="bg-slate-800 border border-slate-700 text-emerald-400 font-mono text-sm rounded-xl px-4 py-2.5 flex-1 focus:outline-none">
+                            <button onclick="copyApiKey()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Copy Key
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- API Details Table -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-slate-900 text-base">API Endpoints Overview</h4>
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 font-mono text-xs text-slate-800 space-y-2">
+                            <div><strong class="text-blue-600">HTTP Method:</strong> POST</div>
+                            <div><strong class="text-blue-600">API URL:</strong> https://mainsmmhub.com/api/v2</div>
+                            <div><strong class="text-blue-600">Response Format:</strong> JSON</div>
+                        </div>
+
+                        <!-- Code Example -->
+                        <div class="bg-slate-900 text-slate-200 rounded-xl p-4 font-mono text-xs overflow-x-auto space-y-2">
+                            <div class="text-slate-400">// Example POST Request (Place Order)</div>
+                            <pre class="text-emerald-400">
+{
+  "key": "msh_live_8f93a1029e847c...",
+  "action": "add",
+  "service": 2458,
+  "link": "https://t.me/examplechannel",
+  "quantity": 1000
+}
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: SUPPORT TICKETS -->
+            <section id="tab-tickets" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Create Ticket Form -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                        <h3 class="text-xl font-bold text-slate-900 border-b pb-4 flex items-center gap-2">
+                            <i data-lucide="life-buoy" class="w-5 h-5 text-blue-600"></i> Open Support Ticket
+                        </h3>
+
+                        <form onsubmit="handleCreateTicket(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Subject / Query Type</label>
+                                <select id="ticketSubject" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500">
+                                    <option>Order Issue (Stuck/Refill)</option>
+                                    <option>Payment / Deposit Issue</option>
+                                    <option>API Reseller Assistance</option>
+                                    <option>Other Queries</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Order ID (If applicable)</label>
+                                <input type="text" id="ticketOrderId" placeholder="e.g. 1042" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Message / Details</label>
+                                <textarea id="ticketMessage" rows="4" required placeholder="Describe your issue in detail..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-600/30 text-sm flex items-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i> Submit Ticket
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Existing Tickets List -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-900 text-base">Your Active Tickets</h4>
+                        <div id="ticketsList" class="space-y-3">
+                            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-slate-800">#TK-1029</span>
+                                    <span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded text-[10px]">Pending Staff</span>
+                                </div>
+                                <div class="text-slate-600 font-medium">Order #1040 Speed Refill Request</div>
+                                <div class="text-[10px] text-slate-400">Created 2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: CHILD PANEL -->
+            <section id="tab-child-panel" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm text-center max-w-2xl mx-auto space-y-4">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="layers" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-slate-900">Start Your Own SMM Business!</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Rent a turn-key Child Panel connected directly to Main SMM Hub API. Sell services to your customers under your domain with your custom prices.</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-left text-xs space-y-2 font-medium">
+                        <div class="flex items-center gap-2 text-slate-800"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Automated Order Sync & Processing</div>
+                        <div class="flex items-center gap-2 text-slate-800"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Complete Admin Dashboard Included</div>
+                        <div class="flex items-center gap-2 text-slate-800"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Monthly Price: <strong>₹1,000 / $12 per month</strong></div>
+                    </div>
+
+                    <button onclick="showToast('Child Panel order feature initialized! Staff will contact you.', 'success')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-lg shadow-blue-600/30">
+                        Order Child Panel Now
+                    </button>
+                </div>
+            </section>
+
+            <!-- TAB 8: AFFILIATES -->
+            <section id="tab-affiliates" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                    <div class="border-b pb-4">
+                        <h3 class="text-xl font-bold text-slate-900">Affiliate / Referral Program</h3>
+                        <p class="text-xs text-slate-500">Invite users to Main SMM Hub and earn 5% commission on all their deposit top-ups for life!</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                            <div class="text-xs text-blue-600 font-bold uppercase">Referral Link Clicks</div>
+                            <div class="text-2xl font-extrabold text-slate-900 mt-1">142</div>
+                        </div>
+                        <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+                            <div class="text-xs text-emerald-600 font-bold uppercase">Referred Users</div>
+                            <div class="text-2xl font-extrabold text-slate-900 mt-1">18</div>
+                        </div>
+                        <div class="p-4 bg-purple-50 border border-purple-100 rounded-xl">
+                            <div class="text-xs text-purple-600 font-bold uppercase">Total Earnings</div>
+                            <div class="text-2xl font-extrabold text-slate-900 mt-1">₹3,450.00</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">Your Referral Link</label>
+                        <div class="flex items-center gap-3">
+                            <input type="text" readonly value="https://mainsmmhub.com/ref/johndoe12" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 flex-1">
+                            <button onclick="navigator.clipboard.writeText('https://mainsmmhub.com/ref/johndoe12'); showToast('Referral link copied!', 'success');" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition-all">
+                                Copy Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FLOATING WHATSAPP SUPPORT BUTTON -->
+    <a href="https://wa.me/1234567890" target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl z-40 transition-transform hover:scale-110 flex items-center justify-center">
+        <i data-lucide="message-circle" class="w-7 h-7"></i>
+    </a>
+
+    <!-- APPLICATION LOGIC JS -->
+    <script>
+        // --- GLOBAL STATE ---
+        let currentCurrency = 'INR';
+        const currencySymbols = { INR: '₹', USD: '$', EUR: '€' };
+        const currencyRates = { INR: 1, USD: 0.012, EUR: 0.011 };
+
+        // Users & Auth Database State
+        let currentUser = null; // Stores currently logged in user object
+        const ADMIN_ID = "6200482928";
+        const ADMIN_PASS = "Abhi@219";
+
+        let usersDatabase = [
+            { id: "101", username: "demouser", name: "Demo Reseller", password: "user123", balance: 500.00, totalDeposited: 500.00, joined: "2026-03-01", role: "user" }
+        ];
+
+        // All Deposits State (User Add Funds)
+        let depositsList = [
+            { id: "DEP-901", username: "demouser", amountINR: 500, txnId: "UTR82910394812", method: "BharatPe", status: "Approved", date: "2026-03-01" },
+            { id: "DEP-902", username: "demouser", amountINR: 200, txnId: "UTR98321049182", method: "BharatPe", status: "Pending", date: "2026-03-29" }
+        ];
+
+        // Service Catalog Data
+        const servicesData = [
+            { id: 2458, category: "Telegram Members", name: "Telegram Members | 10k Per day | 90 day Non Drop | Start:0-4 hours", rateINR: 36.08, min: 100, max: 220000, desc: "Instant start. High quality active non-drop members with 90 days refill warranty." },
+            { id: 326, category: "Telegram Members", name: "Telegram Members | 20k Per day | 90 day Non Drop | Start:0-1 hours", rateINR: 54.12, min: 100, max: 500000, desc: "Ultra fast delivery members, start time within 1 hour." },
+            { id: 762, category: "Telegram Members", name: "Telegram Members | 30k Per day | 30 day Non Drop | HQ | Start:0-1hours", rateINR: 22.79, min: 500, max: 100000, desc: "High quality Telegram channel members." },
+            { id: 1627, category: "Telegram Members", name: "Telegram Premium Members | 7-10 Days Non Drop | Start: 0-2 hours", rateINR: 512.77, min: 500, max: 20000, desc: "Real Telegram Premium star icon accounts." },
+            { id: 419, category: "Telegram Views", name: "Telegram 1 Post Views | Fast & Cheap", rateINR: 0.19, min: 10, max: 100000, desc: "Instant view delivery for a single post." },
+            { id: 412, category: "Telegram Views", name: "Telegram 5 Last Posts Views | Instant", rateINR: 5.69, min: 10, max: 10000000, desc: "Automatically spreads views across last 5 posts." }
+        ];
+
+        // User Orders History State
+        let ordersList = [
+            { id: 1042, username: "demouser", service: "Telegram Members | 10k Per day | 90 day Non Drop", link: "https://t.me/cryptoleaks", qty: 5000, chargeINR: 180.40, status: "In Progress", date: "2026-03-29" }
+        ];
+
+        // --- AUTHENTICATION FLOW ---
+        function switchAuthMode(mode) {
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+            const tabSignIn = document.getElementById('authTabSignInBtn');
+            const tabSignUp = document.getElementById('authTabSignUpBtn');
+
+            if (mode === 'signin') {
+                signInForm.classList.remove('hidden');
+                signUpForm.classList.add('hidden');
+                tabSignIn.classList.add('text-blue-600', 'border-b-2', 'border-blue-600', 'bg-white');
+                tabSignUp.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600', 'bg-white');
+            } else {
+                signInForm.classList.add('hidden');
+                signUpForm.classList.remove('hidden');
+                tabSignUp.classList.add('text-blue-600', 'border-b-2', 'border-blue-600', 'bg-white');
+                tabSignIn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600', 'bg-white');
+            }
+        }
+
+        function handleSignIn(e) {
+            e.preventDefault();
+            const id = document.getElementById('signInIdentifier').value.trim();
+            const pass = document.getElementById('signInPassword').value.trim();
+
+            // Check Admin Login
+            if (id === ADMIN_ID && pass === ADMIN_PASS) {
+                currentUser = { id: ADMIN_ID, username: "Admin", name: "System Admin", role: "admin", balance: 0 };
+                document.getElementById('authModal').classList.add('hidden');
+                setupAdminUI();
+                showToast("Welcome Admin! Operational controls unlocked.", "success");
+                return;
+            }
+
+            // Check User Login
+            const user = usersDatabase.find(u => u.username === id && u.password === pass);
+            if (user) {
+                currentUser = user;
+                document.getElementById('authModal').classList.add('hidden');
+                setupUserUI();
+                showToast(`Signed in successfully as ${user.username}!`, "success");
+            } else {
+                showToast("Invalid credentials! For admin use ID: 6200482928 Pass: Abhi@219", "error");
+            }
+        }
+
+        function handleSignUp(e) {
+            e.preventDefault();
+            const name = document.getElementById('signUpName').value.trim();
+            const user = document.getElementById('signUpUser').value.trim();
+            const pass = document.getElementById('signUpPass').value.trim();
+
+            if (usersDatabase.some(u => u.username === user)) {
+                showToast("Username already registered!", "error");
+                return;
+            }
+
+            const newUser = {
+                id: (100 + usersDatabase.length + 1).toString(),
+                username: user,
+                name: name,
+                password: pass,
+                balance: 0.00,
+                totalDeposited: 0.00,
+                joined: new Date().toISOString().split('T')[0],
+                role: "user"
+            };
+
+            usersDatabase.push(newUser);
+            currentUser = newUser;
+            document.getElementById('authModal').classList.add('hidden');
+            setupUserUI();
+            showToast("Account created successfully!", "success");
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('adminNavGroup').classList.add('hidden');
+            document.getElementById('adminBadge').classList.add('hidden');
+            switchTab('new-order');
+        }
+
+        function setupUserUI() {
+            document.getElementById('userDisplayName').textContent = currentUser.name || currentUser.username;
+            document.getElementById('userRoleName').textContent = "Reseller Client";
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            document.getElementById('adminNavGroup').classList.add('hidden');
+            document.getElementById('adminBadge').classList.add('hidden');
+            document.getElementById('headerBalanceWidget').classList.remove('hidden');
+            updateBalanceDisplay();
+            renderUserDeposits();
+            renderOrdersTable();
+        }
+
+        function setupAdminUI() {
+            document.getElementById('userDisplayName').textContent = "System Admin";
+            document.getElementById('userRoleName').textContent = "Master Control";
+            document.getElementById('userAvatar').textContent = "A";
+            document.getElementById('adminNavGroup').classList.remove('hidden');
+            document.getElementById('adminBadge').classList.remove('hidden');
+            document.getElementById('headerBalanceWidget').classList.add('hidden');
+            
+            refreshAdminViews();
+            switchTab('admin-dashboard');
+        }
+
+        // --- ADD FUNDS WITH ADMIN APPROVAL FLOW ---
+        function handleAddFunds(e) {
+            e.preventDefault();
+            if (!currentUser || currentUser.role === 'admin') {
+                showToast("Please sign in as a user to add funds.", "error");
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('fundAmount').value);
+            const txnId = document.getElementById('fundTxnId').value.trim();
+
+            if (amount < 100) {
+                showToast("Minimum deposit amount is ₹100!", "error");
+                return;
+            }
+
+            const methodSelect = document.getElementById('paymentMethodSelect');
+            const selectedMethodText = methodSelect.options[methodSelect.selectedIndex].text.split('-')[0].trim();
+
+            const newDeposit = {
+                id: `DEP-${Math.floor(100 + Math.random() * 900)}`,
+                username: currentUser.username,
+                amountINR: amount,
+                txnId: txnId,
+                method: selectedMethodText,
+                status: "Pending",
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            depositsList.unshift(newDeposit);
+            renderUserDeposits();
+
+            document.getElementById('fundAmount').value = '';
+            document.getElementById('fundTxnId').value = '';
+
+            showToast("Deposit request submitted! Awaiting Admin approval.", "success");
+        }
+
+        function renderUserDeposits() {
+            const list = document.getElementById('userDepositsList');
+            if (!currentUser) return;
+
+            const myDeposits = depositsList.filter(d => d.username === currentUser.username);
+            if (myDeposits.length === 0) {
+                list.innerHTML = `<div class="text-xs text-slate-400 p-3">No deposit history found.</div>`;
+                return;
+            }
+
+            list.innerHTML = myDeposits.map(d => `
+                <div class="p-3 bg-slate-50 rounded-xl flex items-center justify-between text-xs border border-slate-100">
+                    <div>
+                        <div class="font-bold text-slate-800">${formatMoney(d.amountINR)} (${d.method})</div>
+                        <div class="text-[10px] text-slate-400">Txn: ${d.txnId}</div>
+                    </div>
+                    ${d.status === 'Approved' ? '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px]">Approved</span>' :
+                      d.status === 'Rejected' ? '<span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">Rejected</span>' :
+                      '<span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded text-[10px]">Pending Approval</span>'}
+                </div>
+            `).join('');
+        }
+
+        // --- ADMIN CONTROLS LOGIC ---
+        function refreshAdminViews() {
+            renderAdminPendingApprovals();
+            renderAdminUsersTable();
+            renderAdminOrdersTable();
+            updateAdminStats();
+        }
+
+        function updateAdminStats() {
+            const pendingCount = depositsList.filter(d => d.status === 'Pending').length;
+            document.getElementById('adminStatPending').textContent = pendingCount;
+            document.getElementById('pendingApprovalBadge').textContent = pendingCount;
+
+            document.getElementById('adminStatUsers').textContent = usersDatabase.length;
+
+            const totalApproved = depositsList.filter(d => d.status === 'Approved').reduce((acc, d) => acc + d.amountINR, 0);
+            document.getElementById('adminStatApprovedFunds').textContent = formatMoney(totalApproved);
+
+            document.getElementById('adminStatTotalOrders').textContent = ordersList.length;
+        }
+
+        function renderAdminPendingApprovals() {
+            const tbody = document.getElementById('adminPendingTableBody');
+            const pending = depositsList.filter(d => d.status === 'Pending');
+
+            if (pending.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No pending payment approvals right now.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = pending.map(d => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3.5 font-bold text-blue-600">${d.id}</td>
+                    <td class="p-3.5 font-bold text-slate-900">${d.username}</td>
+                    <td class="p-3.5">${d.method}</td>
+                    <td class="p-3.5 font-mono text-slate-700">${d.txnId}</td>
+                    <td class="p-3.5 font-bold text-emerald-600">${formatMoney(d.amountINR)}</td>
+                    <td class="p-3.5 text-slate-400">${d.date}</td>
+                    <td class="p-3.5 text-center flex items-center justify-center gap-2">
+                        <button onclick="approveDeposit('${d.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow">Approve</button>
+                        <button onclick="rejectDeposit('${d.id}')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow">Reject</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveDeposit(depositId) {
+            const dep = depositsList.find(d => d.id === depositId);
+            if (!dep) return;
+
+            dep.status = "Approved";
+
+            // Find user and add balance
+            const user = usersDatabase.find(u => u.username === dep.username);
+            if (user) {
+                user.balance += dep.amountINR;
+                user.totalDeposited += dep.amountINR;
+            }
+
+            refreshAdminViews();
+            showToast(`Approved deposit #${depositId}! User balance updated.`, "success");
+        }
+
+        function rejectDeposit(depositId) {
+            const dep = depositsList.find(d => d.id === depositId);
+            if (!dep) return;
+
+            dep.status = "Rejected";
+            refreshAdminViews();
+            showToast(`Deposit #${depositId} rejected.`, "info");
+        }
+
+        function renderAdminUsersTable() {
+            const tbody = document.getElementById('adminUsersTableBody');
+            tbody.innerHTML = usersDatabase.map(u => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3.5 font-bold text-slate-900">${u.username} <span class="text-xs text-slate-400">(${u.id})</span></td>
+                    <td class="p-3.5">${u.name}</td>
+                    <td class="p-3.5 text-slate-500">${u.joined}</td>
+                    <td class="p-3.5 font-bold text-blue-600">${formatMoney(u.balance)}</td>
+                    <td class="p-3.5 font-bold text-emerald-600">${formatMoney(u.totalDeposited)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminOrdersTable() {
+            const tbody = document.getElementById('adminOrdersTableBody');
+            tbody.innerHTML = ordersList.map(o => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3.5 font-bold text-slate-900">#${o.id}</td>
+                    <td class="p-3.5 font-bold text-blue-600">${o.username || 'demouser'}</td>
+                    <td class="p-3.5 font-medium max-w-xs truncate">${o.service}</td>
+                    <td class="p-3.5 text-blue-600 truncate max-w-xs"><a href="${o.link}" target="_blank">${o.link}</a></td>
+                    <td class="p-3.5">${o.qty.toLocaleString()}</td>
+                    <td class="p-3.5">${getStatusBadge(o.status)}</td>
+                    <td class="p-3.5 text-center">
+                        <select onchange="updateOrderStatus(${o.id}, this.value)" class="bg-slate-100 border border-slate-300 rounded px-2 py-1 text-xs">
+                            <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+                            <option value="In Progress" ${o.status==='In Progress'?'selected':''}>In Progress</option>
+                            <option value="Completed" ${o.status==='Completed'?'selected':''}>Completed</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = ordersList.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                refreshAdminViews();
+                showToast(`Order #${orderId} status changed to ${newStatus}`, "success");
+            }
+        }
+
+        function updateBalanceDisplay() {
+            if (currentUser && currentUser.role !== 'admin') {
+                document.getElementById('userBalanceDisplay').textContent = formatMoney(currentUser.balance);
+            }
+        }
+    </script>
+</body>
+</html>
